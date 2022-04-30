@@ -44,6 +44,7 @@ router.post("/books", async (req, res) => {
     }
 })
 
+// * Update book
 router.patch("/books/:bookId", async (req, res) => {
     try {
         const selectedId = await Book.findByPk(req.params.bookId)
@@ -61,6 +62,7 @@ router.patch("/books/:bookId", async (req, res) => {
     }
 })
 
+// * Delete book
 router.delete("/books/:bookId", async (req, res) => {
     try {
         const selectedId = await Book.findByPk(req.params.bookId)
