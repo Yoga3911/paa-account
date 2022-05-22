@@ -1,19 +1,25 @@
 const express = require("express")
-const { route } = require("express/lib/application")
 const router = express.Router()
-const Book = require("../models/Book")
+// const User = require("../models/User")
+// const Admin = require("../models/Admin")
+// const Req_to_be_seller = require("../models/Req_to_be_seller")
+const Product = require("../models/Product")
+const Category = require("../models/Category")
+const Review = require("../models/Review")
+const RPhoto = require("../models/RPhoto")
+const ReviewRPhoto = require("../models/Review_RPhoto")
+const Acc_Product = require("../models/Acc_Product")
 
-// * Get All book
-router.get("/books", async (_, res) => {
+router.get("/users", async (_, res) => {
     try {
-        await Book.findAll({
+        await User.findAll({
             order: [
-                ["id", "ASC"]
+                ["user_id", "ASC"]
             ]
-        }).then((books) => res.status(200).json({
+        }).then((users) => res.status(200).json({
             status: true,
-            message: "Get all books successfully",
-            data: books
+            message: "Get all user successfully",
+            data: users
         }))
     } catch (e) {
         res.status(500).json({
@@ -24,15 +30,14 @@ router.get("/books", async (_, res) => {
     }
 })
 
-// * Insert book
-router.post("/books", async (req, res) => {
+router.post("/review", async (req, res) => {
     try {
-        await Book.create(
+        await Review.create(
             req.body
-        ).then((book) => res.status(201).json({
+        ).then((review) => res.status(201).json({
             status: true,
-            message: "Insert book successfully",
-            data: book
+            message: "Insert review successfully",
+            data: review
         }))
 
     } catch (e) {
@@ -42,43 +47,6 @@ router.post("/books", async (req, res) => {
             data: null
         })
     }
-})
-
-// * Update book
-router.patch("/books/:bookId", async (req, res) => {
-    try {
-        const selectedId = await Book.findByPk(req.params.bookId)
-        selectedId.set({ ...req.body }).save().then((book) => res.status(200).json({
-            status: true,
-            message: "Update book successfuly",
-            data: book
-        }))
-    } catch (e) {
-        res.status(500).json({
-            status: false,
-            message: e,
-            data: null
-        })
-    }
-})
-
-// * Delete book
-router.delete("/books/:bookId", async (req, res) => {
-    try {
-        const selectedId = await Book.findByPk(req.params.bookId)
-        selectedId.destroy().then((book) => res.status(200).json({
-            status: true,
-            message: "Delete book successfully",
-            data: book
-        }))
-    } catch (e) {
-        res.status(500).json({
-            status: false,
-            message: e,
-            data: null
-        })
-    }
-
 })
 
 module.exports = router

@@ -4,8 +4,6 @@ const cors = require("cors")
 const sync = require("./utils/sync")
 const api = require("./api/api")
 
-const PORT = 3000
-
 sync()
 
 const app = express()
@@ -15,5 +13,5 @@ app.use(express.json())
 app.use("/api/v1", api)
 
 app.listen(process.env.PORT, () => {
-    console.log(`App listening on port ${process.env.PORT}`)
+    console.log(`Listening on port ${process.env.PORT}`)
 })
