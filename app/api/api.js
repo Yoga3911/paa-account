@@ -52,4 +52,29 @@ router.post("/users/login", async (req, res) => {
     }
 })
 
+router.post("/users/request", async (req, res) =>{
+    const data = req.body
+    try{
+        await Req_to_be_seller.create({
+            user_id: data.user_id,
+            shop_address: data.shop_address,
+            phone: data.phone,
+            shop_image: data.shop_image,
+            status: data.status,
+            request_date: data.request_date,
+            acc_date: data.acc_date,
+        }).then((data)=>res.status(200).json({
+            status: true,
+            message: "Permohonan Anda Telah Dikirim",
+            data: data,
+        }))
+    } catch (e) {
+        res.status(500).json({
+            status: false,
+            message: e,
+            data: null
+        })
+    }
+})
+
 module.exports = router
