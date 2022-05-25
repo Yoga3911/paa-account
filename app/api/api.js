@@ -5,6 +5,7 @@ const User = require('../models/User');
 const Admin = require('../models/Admin');
 const Req_to_be_seller = require('../models/Req_to_be_seller');
 
+//!! Login
 router.post('/users/login', async (req, res) => {
   const data = req.body;
   try {
@@ -51,6 +52,7 @@ router.post('/users/login', async (req, res) => {
   }
 });
 
+//!! Request to be seller
 router.post('/users/request', async (req, res) => {
   const data = req.body;
   try {
@@ -78,6 +80,8 @@ router.post('/users/request', async (req, res) => {
   }
 });
 
+
+//!! Update User
 router.put('/users/profile/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
@@ -106,17 +110,6 @@ router.put('/users/profile/:userId', async (req, res) => {
     });
     console.log(error);
   }
-});
-
-router.get('/users/approve/:userId', async (req, res) => {
-  const userId = req.params.userId;
-  const result = await User.findByPk(userId);
-
-  res.status(200).json({
-    status: true,
-    message: 'Berhasil',
-    data: result,
-  });
 });
 
 //!! Get User
