@@ -108,4 +108,14 @@ router.put("/users/profile/:userId", async (req, res) => {
   }
 });
 
+router.get("/users/approve/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  const result = await Req_to_be_seller.findByPk(userId);
+
+  res.status(200).json({
+    status: true,
+    message: "Berhasil",
+    data: result,
+  });
+});
 module.exports = router;
