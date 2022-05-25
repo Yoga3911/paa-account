@@ -1,11 +1,11 @@
-const express = require("express");
-const jwt = require("jsonwebtoken");
+const express = require('express');
+const jwt = require('jsonwebtoken');
 const router = express.Router();
-const User = require("../models/User");
-const Admin = require("../models/Admin");
-const Req_to_be_seller = require("../models/Req_to_be_seller");
+const User = require('../models/User');
+const Admin = require('../models/Admin');
+const Req_to_be_seller = require('../models/Req_to_be_seller');
 
-router.post("/users/login", async (req, res) => {
+router.post('/users/login', async (req, res) => {
   const data = req.body;
   try {
     const result = await User.findOne({
@@ -17,7 +17,7 @@ router.post("/users/login", async (req, res) => {
 
     if (result != null) {
       const secret = process.env.JWT_SECRET;
-      const expire = "1h";
+      const expire = '1h';
       const data = {
         id: result.user_id,
         username: result.username,
@@ -26,11 +26,11 @@ router.post("/users/login", async (req, res) => {
         address: result.address,
       };
 
-      const token = jwt.sign(data, secret, { algorithm: "HS256", expiresIn: expire });
+      const token = jwt.sign(data, secret, { algorithm: 'HS256', expiresIn: expire });
 
       res.status(200).json({
         status: true,
-        message: "Login berhasil!",
+        message: 'Login berhasil!',
         data: result,
         token: token,
       });
@@ -39,7 +39,7 @@ router.post("/users/login", async (req, res) => {
 
     res.status(404).json({
       status: false,
-      message: "User not found!",
+      message: 'User not found!',
       data: null,
     });
   } catch (e) {
@@ -51,7 +51,7 @@ router.post("/users/login", async (req, res) => {
   }
 });
 
-router.post("/users/request", async (req, res) => {
+router.post('/users/request', async (req, res) => {
   const data = req.body;
   try {
     await Req_to_be_seller.create({
@@ -65,7 +65,7 @@ router.post("/users/request", async (req, res) => {
     }).then((data) =>
       res.status(200).json({
         status: true,
-        message: "Permohonan Anda Telah Dikirim",
+        message: 'Permohonan Anda Telah Dikirim',
         data: data,
       })
     );
@@ -78,7 +78,7 @@ router.post("/users/request", async (req, res) => {
   }
 });
 
-router.put("/users/profile/:userId", async (req, res) => {
+router.put('/users/profile/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
     const selectedUser = await User.findByPk(userId);
@@ -101,21 +101,46 @@ router.put("/users/profile/:userId", async (req, res) => {
   } catch (error) {
     res.status(500).json({
       status: false,
-      message: "Internal Server Error",
+      message: 'Internal Server Error',
       data: null,
     });
     console.log(error);
   }
 });
 
-router.get("/users/approve/:userId", async (req, res) => {
+router.get('/users/approve/:userId', async (req, res) => {
   const userId = req.params.userId;
-  const result = await Req_to_be_seller.findByPk(userId);
+  const result = await User.findByPk(userId);
 
   res.status(200).json({
     status: true,
-    message: "Berhasil",
+    message: 'Berhasil',
     data: result,
   });
 });
+
+//!! Get User
+router.get('/users/profile/:userId', async (req, res) => {
+  const userId = req.params.userId;
+  const result = await User.findByPk(userId);
+
+  res.status(200).json({
+    status: true,
+    message: 'Berhasil',
+    data: result,
+  });
+});
+
+//!! Approve User
+router.patch('/users/approve/:requestId', async (req, res) => {
+  const requestId = req.params.requestId;
+  const result = await Req_to_be_seller.findByPk(requestId);
+
+  res.status(200).json({
+    status: true,
+    message: 'Berhasil',
+    data: result,
+  });
+});
+
 module.exports = router;
