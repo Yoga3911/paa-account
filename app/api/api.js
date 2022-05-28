@@ -5,7 +5,7 @@ const User = require('../models/User');
 const Admin = require('../models/Admin');
 const Req_to_be_seller = require('../models/Req_to_be_seller');
 
-//!! Login
+//!! Login - YOGA
 router.post('/users/login', async (req, res) => {
   const data = req.body;
   try {
@@ -37,13 +37,15 @@ router.post('/users/login', async (req, res) => {
       });
       return;
     }
-
+    //else
     res.status(404).json({
       status: false,
       message: 'User not found!',
       data: null,
     });
-  } catch (e) {
+  }
+  //error dr server
+  catch (e) {
     res.status(500).json({
       status: false,
       message: e,
@@ -52,6 +54,50 @@ router.post('/users/login', async (req, res) => {
   }
 });
 
+//!! Register - BEA
+router.post('/users/register', async (req, res) => {
+  const data = req.body;
+  try {
+    const user = await User.findOne({
+      where: {
+        email: data.email
+      }
+    })
+    if (user == null) {
+      const result = await User.create({
+        username: data.username,
+        email: data.email,
+        password: data.password,
+        address: data.address,
+        image: data.image,
+        is_seller : false
+
+      })
+      res.status(201).json({
+        status: true,
+        message: 'Akun berhasil dibuat',
+        data: result
+      });
+      return
+    }
+    //else
+    res.status(400).json({
+      status: false,
+      message: 'Email telah terdaftar, silahkan daftarkan email yang lain',
+      data: null
+    });
+
+    //error dr server
+  } catch (error) {
+    res.status(500).json({
+      status: false,
+      message: error,
+      data: null
+    })
+
+  }
+})
+/////////////////////////////////////////////////////////
 //!! Request to be seller
 router.post('/users/request', async (req, res) => {
   const data = req.body;
