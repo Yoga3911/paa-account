@@ -192,6 +192,7 @@ router.get('/users/profile/:userId', async (req, res) => {
 router.patch('/users/approve/:requestId', async (req, res) => {
   try {
     const requestId = req.params.requestId;
+    const adminId = req.body.admin_id;
     const result = await Req_to_be_seller.findByPk(requestId);
 
     if (result == null) {
@@ -204,7 +205,9 @@ router.patch('/users/approve/:requestId', async (req, res) => {
     }
 
     result.set({
-      status: true
+      admin_id: adminId,
+      status: true,
+      acc_date: Date.now(),
     }).save()
 
     const user = await User.findByPk(result.user_id)
