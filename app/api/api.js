@@ -40,7 +40,7 @@ router.post('/users/login', async (req, res) => {
     //else
     res.status(404).json({
       status: false,
-      message: 'User not found!',
+      message: 'Email atau Password salah',
       data: null,
     });
   }
@@ -70,7 +70,8 @@ router.post('/users/register', async (req, res) => {
         password: data.password,
         address: data.address,
         image: data.image,
-        is_seller : false
+        is_seller: false,
+        is_active: false,
 
       })
       res.status(201).json({
@@ -107,9 +108,8 @@ router.post('/users/request', async (req, res) => {
       shop_address: data.shop_address,
       phone: data.phone,
       shop_image: data.shop_image,
-      status: data.status,
-      request_date: data.request_date,
-      acc_date: data.acc_date,
+      status: false,
+      request_date: Date.now(),
     }).then((data) =>
       res.status(200).json({
         status: true,
@@ -160,26 +160,71 @@ router.put('/users/profile/:userId', async (req, res) => {
 
 //!! Get User
 router.get('/users/profile/:userId', async (req, res) => {
-  const userId = req.params.userId;
-  const result = await User.findByPk(userId);
+  try {
+    const userId = req.params.userId;
+    const result = await User.findByPk(userId);
 
-  res.status(200).json({
-    status: true,
-    message: 'Berhasil',
-    data: result,
-  });
+    if (result == null) {
+      res.status(404).json({
+        status: true,
+        message: 'User tidak ditemukan',
+        data: result,
+      });
+      return;
+    }
+
+    res.status(200).json({
+      status: true,
+      message: 'Berhasil',
+      data: result,
+    });
+
+  } catch (e) {
+    res.status(500).json({
+      status: false,
+      message: 'Internal Server Error',
+      data: null,
+    });
+  }
 });
 
 //!! Approve User
 router.patch('/users/approve/:requestId', async (req, res) => {
-  const requestId = req.params.requestId;
-  const result = await Req_to_be_seller.findByPk(requestId);
+  try {
+    const requestId = req.params.requestId;
+    const result = await Req_to_be_seller.findByPk(requestId);
 
-  res.status(200).json({
-    status: true,
-    message: 'Berhasil',
-    data: result,
-  });
+    if (result == null) {
+      res.status(404).json({
+        status: false,
+        message: 'Data tidak ditemukan',
+        data: result,
+      });
+      return;
+    }
+
+    result.set({
+      status: true
+    }).save()
+
+    const user = await User.findByPk(result.user_id)
+    user.set({
+      is_seller: true
+    }).save()
+
+    res.status(200).json({
+      status: true,
+      message: 'Berhasil',
+      data: result,
+    });
+
+  } catch (e) {
+    res.status(500).json({
+      status: false,
+      message: 'Internal Server Error',
+      data: null,
+    });
+  }
 });
 
 module.exports = router;

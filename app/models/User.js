@@ -32,6 +32,10 @@ const User = db.define(
         is_seller: {
             type: DataTypes.BOOLEAN,
             allowNull: false,
+        },
+        is_active: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
         }
     }
 )
