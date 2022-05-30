@@ -4,7 +4,7 @@
   "description": "test crud api",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon ./app/main.js"
+    "start": "node ./app/main.js"
   },
   "author": "yoga",
   "license": "ISC",
