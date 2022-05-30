@@ -16,6 +16,15 @@ router.post('/users/login', async (req, res) => {
       }
     });
 
+    if (result == null) {
+      res.status(404).json({
+        status: false,
+        message: 'User tidak ditemukan',
+        data: null,
+      });
+      return;
+    }
+
     const isValid = await bcrypt.comparePassword(data.password, result.password)
     if (!isValid) {
       res.status(400).json({
@@ -30,7 +39,7 @@ router.post('/users/login', async (req, res) => {
       where: {
         email: data.email,
       },
-      attributes : {
+      attributes: {
         exclude: ['password']
       }
     });
@@ -56,12 +65,7 @@ router.post('/users/login', async (req, res) => {
       });
       return;
     }
-    //else
-    res.status(404).json({
-      status: false,
-      message: 'User tidak ditemukan',
-      data: null,
-    });
+
   }
   //error dr server
   catch (e) {
