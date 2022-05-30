@@ -4,6 +4,7 @@ const router = express.Router();
 const User = require('../models/User');
 const Admin = require('../models/Admin');
 const Req_to_be_seller = require('../models/Req_to_be_seller');
+const bcrypt = require('../utils/hash_salt');
 
 //!! Login - YOGA
 router.post('/users/login', async (req, res) => {
@@ -12,19 +13,37 @@ router.post('/users/login', async (req, res) => {
     const result = await User.findOne({
       where: {
         email: data.email,
-        password: data.password,
-      },
+      }
     });
 
-    if (result != null) {
+    const isValid = await bcrypt.comparePassword(data.password, result.password)
+    if (!isValid) {
+      res.status(400).json({
+        status: true,
+        message: 'Password salah!',
+        data: null,
+      });
+      return;
+    }
+
+    const result2 = await User.findOne({
+      where: {
+        email: data.email,
+      },
+      attributes : {
+        exclude: ['password']
+      }
+    });
+
+    if (result2 != null) {
       const secret = process.env.JWT_SECRET;
       const expire = '1h';
       const data = {
-        id: result.user_id,
-        username: result.username,
-        email: result.email,
-        password: result.password,
-        address: result.address,
+        id: result2.user_id,
+        username: result2.username,
+        email: result2.email,
+        password: result2.password,
+        address: result2.address,
       };
 
       const token = jwt.sign(data, secret, { algorithm: 'HS256', expiresIn: expire });
@@ -32,7 +51,7 @@ router.post('/users/login', async (req, res) => {
       res.status(200).json({
         status: true,
         message: 'Login berhasil!',
-        data: result,
+        data: result2,
         token: token,
       });
       return;
@@ -40,7 +59,7 @@ router.post('/users/login', async (req, res) => {
     //else
     res.status(404).json({
       status: false,
-      message: 'Email atau Password salah',
+      message: 'User tidak ditemukan',
       data: null,
     });
   }
@@ -64,20 +83,20 @@ router.post('/users/register', async (req, res) => {
       }
     })
     if (user == null) {
+      const hash = await bcrypt.hashPassword(data.password);
       const result = await User.create({
         username: data.username,
         email: data.email,
-        password: data.password,
+        password: hash,
         address: data.address,
         image: data.image,
         is_seller: false,
         is_active: false,
-
       })
       res.status(201).json({
         status: true,
         message: 'Akun berhasil dibuat',
-        data: result
+        data: null,
       });
       return
     }
