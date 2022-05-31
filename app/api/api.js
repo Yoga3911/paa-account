@@ -17,7 +17,7 @@ router.post('/users/login', async (req, res) => {
     });
 
     if (result == null) {
-      res.status(404).json({
+      res.status(400).json({
         status: false,
         message: 'User tidak ditemukan',
         data: null,
@@ -188,7 +188,7 @@ router.get('/users/profile/:userId', async (req, res) => {
     const result = await User.findByPk(userId);
 
     if (result == null) {
-      res.status(404).json({
+      res.status(400).json({
         status: true,
         message: 'User tidak ditemukan',
         data: result,
@@ -219,7 +219,7 @@ router.patch('/users/approve/:requestId', async (req, res) => {
     const result = await Req_to_be_seller.findByPk(requestId);
 
     if (result == null) {
-      res.status(404).json({
+      res.status(400).json({
         status: false,
         message: 'Data tidak ditemukan',
         data: result,
