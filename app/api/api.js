@@ -57,7 +57,7 @@ router.post('/users/login', async (req, res) => {
 
       const token = jwt.sign(data, secret, { algorithm: 'HS256', expiresIn: expire });
 
-      res.status(200).json({
+      res.cookie("access_token_coockie", token, { httpOnly: true, secure: true }).status(200).json({
         status: true,
         message: 'Login berhasil!',
         data: result2,
