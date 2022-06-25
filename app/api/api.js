@@ -156,7 +156,7 @@ router.put('/users/profile/:userId', isLogin, async (req, res) => {
   try {
     const { userId } = req.params;
     const selectedUser = await User.findByPk(userId);
-
+    delete req.body.user_id;
     if (selectedUser) {
       selectedUser.set({ ...req.body }).save();
 

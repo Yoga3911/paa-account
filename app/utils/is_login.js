@@ -10,13 +10,11 @@ module.exports = {
             });
         }
         let authorization = req.headers.authorization;
-        let token = authorization.split(" ")[1];
-        // console.log(token);
 
         let jwtData;
 
         try {
-            jwtData = jwt.verify(token, process.env.TOKEN_KEY);
+            jwtData = jwt.verify(authorization, process.env.JWT_SECRET);
         } catch (error) {
             console.log(error);
 
