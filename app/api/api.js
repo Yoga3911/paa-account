@@ -189,7 +189,7 @@ router.get('/users/profile/:userId', async (req, res) => {
 
     if (result == null) {
       res.status(400).json({
-        status: true,
+        status: false,
         message: 'User tidak ditemukan',
         data: result,
       });
