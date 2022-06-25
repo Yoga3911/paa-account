@@ -5,6 +5,7 @@ const User = require('../models/User');
 const Admin = require('../models/Admin');
 const Req_to_be_seller = require('../models/Req_to_be_seller');
 const bcrypt = require('../utils/hash_salt');
+const { isLogin } = require("../utils/is_login");
 
 //!! Login - YOGA
 router.post('/users/login', async (req, res) => {
@@ -123,7 +124,7 @@ router.post('/users/register', async (req, res) => {
 })
 /////////////////////////////////////////////////////////
 //!! Request to be seller
-router.post('/users/request', async (req, res) => {
+router.post('/users/request', isLogin, async (req, res) => {
   const data = req.body;
   try {
     await Req_to_be_seller.create({
@@ -151,7 +152,7 @@ router.post('/users/request', async (req, res) => {
 
 
 //!! Update User
-router.put('/users/profile/:userId', async (req, res) => {
+router.put('/users/profile/:userId', isLogin, async (req, res) => {
   try {
     const { userId } = req.params;
     const selectedUser = await User.findByPk(userId);
@@ -212,7 +213,7 @@ router.get('/users/profile/:userId', async (req, res) => {
 });
 
 //!! Approve User
-router.patch('/users/approve/:requestId', async (req, res) => {
+router.patch('/users/approve/:requestId', isLogin, async (req, res) => {
   try {
     const requestId = req.params.requestId;
     const adminId = req.body.admin_id;
